@@ -44,6 +44,43 @@ func main() {
 		c.JSON(http.StatusOK, gin.H{"message": "Task deleted"})
 	})
 
+	// 記事の一覧を取得するエンドポイント
+	r.GET("/articles", func(c *gin.Context) {
+		c.JSON(http.StatusOK, models.GetArticleIndex())
+	})
+
+	// 記事の詳細を取得するエンドポイント
+	r.GET("/articles/:id", func(c *gin.Context) {
+		c.JSON(http.StatusOK, models.GetArticleDetail(c))
+	})
+
+	// 新しい記事を作成するエンドポイント
+	r.POST("/articles", func(c *gin.Context) {
+		task, err := models.CreateArticle(c)
+		if err != nil {
+			log.Fatalln(err)
+		}
+		c.JSON(http.StatusOK, task)
+	})
+
+	// 記事を更新するエンドポイント
+	r.PUT("/articles/:id", func(c *gin.Context) {
+		task, err := models.UpdateArticle(c)
+		if err != nil {
+			log.Fatalln(err)
+		}
+		c.JSON(http.StatusOK, task)
+	})
+
+	// 記事を削除するエンドポイント
+	r.DELETE("/articles/:id", func(c *gin.Context) {
+		err := models.DeleteArticle(c)
+		if err != nil {
+			log.Fatalln(err)
+		}
+		c.JSON(http.StatusOK, gin.H{"message": "Article deleted"})
+	})
+
 	// 8080ポートでサーバーを起動
 	r.Run(":8080")
 }
